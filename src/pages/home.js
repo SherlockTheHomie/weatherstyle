@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, createElement } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import Moment from 'react-moment';
 
@@ -162,149 +162,228 @@ export default function Home() {
 
 
 
-  const cardData = {
-    day: {dateC}
-    temp:
-    wind:
-    humidity:
-    description:
-  }
 
-  const [dateC, setDateC] = useState('');
-  const [tempC, setTempC] = useState('');
-  const [windC, setWindC] = useState('');
-  const [humC, setHumC] = useState('');
-  const [desC, setDesC] = useState('');
 
-  let cards = [];
-    const dateC = [];
-    const tempC = [];
-    const windC = [];
-    const humC = [];
-    const desC = [];
   // let date = Moment.utc().format();
   // let local = Moment.utc(date).local().format();
 
+  // const convertDates = (oneCallData) => {
+  //   const datesArray = [];
+  //   for (let weatherIndex = 0; weatherIndex < 5; weatherIndex++) {
+  //     let unixTimestap = oneCallData.daily[weatherIndex].dt;
+  //     let milliseconds = unixTimestap * 1000;
+  //     let dateObject = new Date(milliseconds);
+
+  //     datesArray.push(dateObject.toLocaleString("en-US", { weekday: "long" }));
+  //     console.log(datesArray)
+  //   }
+
+  // }
+
+
+  const daysObjectArray = [];
+  const dayObject = [];
+
+
   const dispResults = (oneCallData) => {
-    
 
     for (let weatherIndex = 0; weatherIndex < 5; weatherIndex++) {
-
       let unixTimestap = oneCallData.daily[weatherIndex].dt;
       let milliseconds = unixTimestap * 1000;
       let dateObject = new Date(milliseconds);
-      // let dateToFormat = dateObject.toLocaleString("en-US", { weekday: "long" });
-      // setDateC(dateObject)
-      // dateToFormat.push(dateC);
-      setTempC(oneCallData.daily[weatherIndex].temp.day)
-      setWindC(oneCallData.daily[weatherIndex].wind_speed)
-      setHumC(oneCallData.daily[weatherIndex].humidity)
-      setDesC(oneCallData.daily[weatherIndex].weather[0].description)
-     
+
+      const dayObject = [
+        {
+          day: dateObject.toLocaleString("en-US", { weekday: "long" }),
+          temp: oneCallData.daily[weatherIndex].temp.day,
+          wind: oneCallData.daily[weatherIndex].wind_speed,
+          hum: oneCallData.daily[weatherIndex].humidity,
+          des: oneCallData.daily[weatherIndex].weather[0].description,
+        }
+      ]
+      daysObjectArray.push([dayObject]);
+      console.log(dayObject)
+
+    }
+    return daysObjectArray;
+  }
+
+  const [date1, setDate1] = useState('');
+  const [temp1, setTemp1] = useState('');
+  const [wind1, setWind1] = useState('');
+  const [hum1, setHum1] = useState('');
+  const [des1, setDes1] = useState('');
+
+  const [date2, setDate2] = useState('');
+  const [temp2, setTemp2] = useState('');
+  const [wind2, setWind2] = useState('');
+  const [hum2, setHum2] = useState('');
+  const [des2, setDes2] = useState('');
+
+  const [date3, setDate3] = useState('');
+  const [temp3, setTemp3] = useState('');
+  const [wind3, setWind3] = useState('');
+  const [hum3, setHum3] = useState('');
+  const [des3, setDes3] = useState('');
+
+  const [date4, setDate4] = useState('');
+  const [temp4, setTemp4] = useState('');
+  const [wind4, setWind4] = useState('');
+  const [hum4, setHum4] = useState('');
+  const [des4, setDes4] = useState('');
+
+  const [date5, setDate5] = useState('');
+  const [temp5, setTemp5] = useState('');
+  const [wind5, setWind5] = useState('');
+  const [hum5, setHum5] = useState('');
+  const [des5, setDes5] = useState('');
+
+  
+
+let myWeatherStorage = JSON.parse(localStorage.getItem("saved"))? JSON.parse(localStorage.getItem("saved")): [];
+
+let pastList = document.getElementById("comboList");
+let saveBtn = document.getElementById("saveButton");
+let pairingName = document.getElementById("pairingSave");
+
+
+
+const saveHandler = (curResult) => {
+	
+	let savedLocation = (searchRef.current.value)
+	myWeatherStorage.push(savedLocation);
+	console.log(myWeatherStorage);
+	localStorage.setItem("saved", JSON.stringify(myWeatherStorage));
+  console.log(savedLocation);
+  textClear();
+};
+
+
+const textClear = () => {
+	searchRef.current.value = "";
 }
+
+
+
+function handleLoadLoc(event) {
+  let savedLocation = localStorage.getItem("saved")
+  savedLocation = JSON.parse(savedLocation)
+  if (event.target.getAttribute() === savedLocation.value) {
+    let userSearch = savedLocation.value;
+    
+    currentApi(userSearch);
+    fiveDay(userSearch)
+  }
 }
 
 
+  const menuId = 'primary-search-account-menu';
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      {myWeatherStorage.map( e =>
+        React.createElement( 'MenuItem', {Menu}, {onClick:handleLoadLoc()}, { e } )
+      )}
+    </Menu>
+  );
 
-
-    const menuId = 'primary-search-account-menu';
-    const renderMenu = (
-      <Menu
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        id={menuId}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        open={isMenuOpen}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      </Menu>
-    );
-
-    return (
-      <>
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                sx={{ mr: 2 }}
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-              >
-                Weather World
-              </Typography>
-              <Box component="form" className="main" onSubmit={searchFormSubmit}>
+  return (
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            >
+              Weather World
+            </Typography>
+            <Box component="form" className="main" onSubmit={searchFormSubmit}>
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
                 <FormControl>
-                <StyledInputBase
-                  id="component-outlined"
-                  inputRef={searchRef}
-                  placeholder="Search…"
-                />
+                  <StyledInputBase
+                    id="component-outlined"
+                    inputRef={searchRef}
+                    placeholder="Search…"
+                  />
                 </FormControl>
                 <Button variant="filled"
-                type="submit" >Search</Button>
+                  type="submit" >Search</Button>
               </Search>
-              </Box>
-            </Toolbar>
-          </AppBar>
-          {renderMenu}
-        </Box>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        {renderMenu}
 
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container>
-            <Grid item xs={12}>
-              <Paper>
-                <Typography className="display-4" id="current-city">{cityVal}</Typography>
-                <Typography className="display-4" id="current-temp">{tempVal}</Typography>
-                <Typography className="display-4" id="current-wind">{windVal}</Typography>
-                <Typography className="display-4" id="current-humidity">{humidityVal}</Typography>
-                <Typography className="display-4" id="current-uv">{uvVal}</Typography>
-                <Button>Save this Location</Button>
+      </Box>
 
-              </Paper>
-            </Grid>
-            <Grid item xs={1}>
-            </Grid>
-            {cards.map((card) => (
-              <Grid item xs={2}>
-              <Card variant="outlined">
-                <Typography><Moment>{dateC['']}</Moment></Typography>
-                <Typography>Temperature: {tempC['']}˚F</Typography>
-                <Typography>Wind Speed: {windC['']}mph</Typography>
-                <Typography>Humidity: {humC['']}%</Typography>
-                <Typography>{desC['']}</Typography>
-              </Card>
-            </Grid>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+          </Grid>
+          <Grid item xs={8}>
+            <Paper elevation={24} sx={{ marginTop: 2}}>
+              <Typography className="city" id="current-city">{cityVal}</Typography>
+              <Typography className="temp" id="current-temp">{tempVal}</Typography>
+              <Typography className="wind" id="current-wind">{windVal}</Typography>
+              <Typography className="humidity" id="current-humidity">{humidityVal}</Typography>
+              <Typography className="uv" id="current-uv">{uvVal}</Typography>
+              <Button onClick={saveHandler}>Save this Location</Button>
 
-            ))}
+            </Paper>
+          </Grid>
+          <Grid item xs={2}>
           </Grid>
           <Grid item xs={1}>
           </Grid>
+
+          {daysObjectArray.forEach[dayObject]} {
+              dayObject.map((e) => {
+                <Grid item xs={2}>
+                  <Card variant="outlined">
+                    <Typography><Moment>{dayObject[e].day}</Moment></Typography>
+                    <Typography>Temperature: {dayObject[e].temp}˚F</Typography>
+                    <Typography>Wind Speed: {dayObject[e].wind}mph</Typography>
+                    <Typography>Humidity: {dayObject[e].hum}%</Typography>
+                    <Typography>{dayObject[e].des}</Typography>
+                  </Card>
+                </Grid>
+              })
+          }
+
+          <Grid item xs={1}>
+          </Grid>
+        </Grid>
       </Box>
     </>
   );
